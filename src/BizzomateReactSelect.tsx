@@ -1,10 +1,8 @@
 import { ReactElement, createElement, useState, useEffect } from "react";
 import Select, { PropsValue, MultiValue, SingleValue } from 'react-select';
-import { ObjectItem, ListExpressionValue, GUID } from "mendix";
+import { ObjectItem, ListExpressionValue, GUID, ActionValue } from "mendix";
 
 import { BizzomateReactSelectContainerProps } from "../typings/BizzomateReactSelectProps";
-
-import "./ui/BizzomateReactSelect.css";
 
 interface MxOption {
     readonly value: GUID;
@@ -27,6 +25,12 @@ const getSelectedSingle = (options: readonly MxOption[], item: ObjectItem) => {
 const getSelectedMulti = (options: readonly MxOption[], itemList: ObjectItem[]) => {
     const optionIds = new Set(itemList.map(({ id }) => id));
     return options.filter(option => optionIds.has(option.value));
+}
+
+const executeAction = (action : ActionValue | undefined) => {
+    if (action && action.canExecute && !action.isExecuting){
+        action.execute();
+    }
 }
 
 export function BizzomateReactSelect(props: BizzomateReactSelectContainerProps): ReactElement {
@@ -76,6 +80,8 @@ export function BizzomateReactSelect(props: BizzomateReactSelectContainerProps):
             const selected = new Set(newValue.map(({value}) => value));
             props.linkedAssociation.setValue(items?.filter(item => selected.has(item.id))); 
         } 
+
+        executeAction(props.onChangeAction);
     }
 
     const handleChange = (newValue: SingleValue<MxOption>) => {
@@ -88,6 +94,8 @@ export function BizzomateReactSelect(props: BizzomateReactSelectContainerProps):
         } else {
             props.linkedAssociation.setValue(items?.find(item => item.id == newValue.value));
         } 
+
+        executeAction(props.onChangeAction);
     }
 
     /*
@@ -97,15 +105,17 @@ export function BizzomateReactSelect(props: BizzomateReactSelectContainerProps):
         return <Select
             options={options}
             value={value}
-            isClearable
+            isClearable={!props.linkedAssociation.readOnly ? true : undefined}
             onChange={handleSetChange}
             isMulti
+            isDisabled={props.linkedAssociation.readOnly ? true : undefined}
             classNamePrefix="react-select" />;
     }
     return <Select
         options={options}
         value={value}
-        isClearable
+        isClearable={!props.linkedAssociation?.readOnly ? true : undefined}
         onChange={handleChange}
+        isDisabled={props.linkedAssociation?.readOnly ? true : undefined}
         classNamePrefix="react-select" />;
 }

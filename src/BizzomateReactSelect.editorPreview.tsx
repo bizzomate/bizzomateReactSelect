@@ -1,10 +1,7 @@
 import { ReactElement, createElement } from "react";
 import { BizzomateReactSelectPreviewProps } from "../typings/BizzomateReactSelectProps";
+import Select from "react-select"
 
 export function preview({  }: BizzomateReactSelectPreviewProps): ReactElement {
-    return <div />;
-}
-
-export function getPreviewCss(): string {
-    return require("./ui/BizzomateReactSelect.css");
+    return <Select />;
 }
