@@ -1,8 +1,10 @@
 import { ReactElement, createElement, useState, useEffect } from "react";
 import Select, { PropsValue, MultiValue, SingleValue } from 'react-select';
-import { ObjectItem, ListExpressionValue, GUID, ActionValue } from "mendix";
+import { ObjectItem, ListExpressionValue, ListAttributeValue, GUID } from "mendix";
 
 import { BizzomateReactSelectContainerProps } from "../typings/BizzomateReactSelectProps";
+
+import "./ui/BizzomateReactSelect.css";
 
 interface MxOption {
     readonly value: GUID;
@@ -11,10 +13,11 @@ interface MxOption {
     readonly isDisabled?: boolean;
 }
 
-const getOptionList = (items: readonly ObjectItem[], textTemplate: ListExpressionValue<string>) => {
+const getOptionList = (items: readonly ObjectItem[], textTemplate: ListExpressionValue<string>, disabled: ListAttributeValue<boolean> | undefined) => {
     return items.map((item): MxOption => ({
         value: item.id,
-        label: textTemplate.get(item).value
+        label: textTemplate.get(item).value,
+        isDisabled: disabled ? disabled.get(item).value : undefined
     }));
 }
 
@@ -27,24 +30,26 @@ const getSelectedMulti = (options: readonly MxOption[], itemList: ObjectItem[]) 
     return options.filter(option => optionIds.has(option.value));
 }
 
-const executeAction = (action : ActionValue | undefined) => {
-    if (action && action.canExecute && !action.isExecuting){
-        action.execute();
-    }
-}
-
 export function BizzomateReactSelect(props: BizzomateReactSelectContainerProps): ReactElement {
 
     const
         [options, setOptions] = useState<readonly MxOption[]>(),
         [value, setValue] = useState<PropsValue<MxOption>>(),
-        [items, setItems] =useState<readonly ObjectItem[]>();
+        [items, setItems] = useState<readonly ObjectItem[]>(),
+        [disabled, setDisabled] = useState<boolean>(false),
+        [clearable, setClearable] = useState<boolean>(true);
+
+    //Check if the item is editable
+    useEffect(() => {
+        setDisabled(props.linkedAssociation?.readOnly ? true : false);
+        setClearable(props.linkedAssociation?.readOnly ? false : true);
+    }, [props.linkedAssociation?.readOnly])
 
     //Populate the options list when dataSource items change
     useEffect(() => {
         setItems(props.objectsDatasource?.items);
         if (props.objectsDatasource?.items && props.assocCaption) {
-            setOptions(getOptionList(props.objectsDatasource.items, props.assocCaption));
+            setOptions(getOptionList(props.objectsDatasource.items, props.assocCaption, props.disabledAttr));
         } else {
             setOptions([]);
         }
@@ -80,8 +85,6 @@ export function BizzomateReactSelect(props: BizzomateReactSelectContainerProps):
             const selected = new Set(newValue.map(({value}) => value));
             props.linkedAssociation.setValue(items?.filter(item => selected.has(item.id))); 
         } 
-
-        executeAction(props.onChangeAction);
     }
 
     const handleChange = (newValue: SingleValue<MxOption>) => {
@@ -94,8 +97,6 @@ export function BizzomateReactSelect(props: BizzomateReactSelectContainerProps):
         } else {
             props.linkedAssociation.setValue(items?.find(item => item.id == newValue.value));
         } 
-
-        executeAction(props.onChangeAction);
     }
 
     /*
@@ -105,17 +106,19 @@ export function BizzomateReactSelect(props: BizzomateReactSelectContainerProps):
         return <Select
             options={options}
             value={value}
-            isClearable={!props.linkedAssociation.readOnly ? true : undefined}
+            isClearable={clearable}
             onChange={handleSetChange}
             isMulti
-            isDisabled={props.linkedAssociation.readOnly ? true : undefined}
+            isDisabled={disabled}
+            unstyled={props.unstyled}
             classNamePrefix="react-select" />;
     }
     return <Select
         options={options}
         value={value}
-        isClearable={!props.linkedAssociation?.readOnly ? true : undefined}
+        isClearable={clearable}
         onChange={handleChange}
-        isDisabled={props.linkedAssociation?.readOnly ? true : undefined}
+        isDisabled={disabled}
+        unstyled={props.unstyled}
         classNamePrefix="react-select" />;
 }
