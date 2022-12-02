@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget id="bizzomate.bizzomatereactselect.BizzomateReactSelect" pluginWidget="true" needsEntityContext="true" offlineCapable="true" supportedPlatform="Web"
+    xmlns="http://www.mendix.com/widget/1.0/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd">
+    <name>Bizzomate React Select</name>
+    <description>React Select implementation for Mendix</description>
+    <icon/>
+    <properties>
+        <propertyGroup caption="General">
+            <propertyGroup caption="Label">
+                <systemProperty key="Label"/>
+            </propertyGroup>
+            <propertyGroup caption="Editability">
+                <systemProperty key="Editability"/>
+            </propertyGroup>
+            <propertyGroup caption="Visibility">
+                <systemProperty key="Visibility"/>
+            </propertyGroup>
+            <propertyGroup caption="Events">
+                <property key="onChangeAction" type="action" dataSource="objectsDatasource">
+                    <caption>On change</caption>
+                    <description></description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Data source">
+                <property key="linkedAssociation" type="association" selectableObjects="objectsDatasource" required="false">
+                    <caption>Association</caption>
+                    <description>The reference(set) to display/set</description>
+                    <associationTypes>
+                        <associationType name="Reference"/>
+                        <associationType name="ReferenceSet"/>
+                    </associationTypes>
+                </property>
+                <property key="assocCaption" type="textTemplate" dataSource="objectsDatasource">
+                    <caption>Caption</caption>
+                    <description>TextTemplate for the assoc caption</description>
+                </property>
+            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Selectable objects">
+            <property key="objectsDatasource" type="datasource" isList="true" required="false">
+                <caption>Selectable objects</caption>
+                <description></description>
+            </property>
+        </propertyGroup>
+    </properties>
+</widget>
