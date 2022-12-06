@@ -10,7 +10,7 @@
   },
   "license": "Apache-2.0",
   "config": {
-    "projectPath": "./tests/testProject",
+    "projectPath": "C:/Mendix/30_Widgets/00_Widget_TestSuite-main",
     "mendixHost": "http://localhost:8080",
     "developmentPort": 3000
   },
