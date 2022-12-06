@@ -1,8 +1,8 @@
-import {ReactElement, useEffect, useState, createElement} from "react";
-import Select, {MultiValue, PropsValue, SingleValue} from 'react-select';
-import {GUID, ListAttributeValue, ListExpressionValue, ListValue, ObjectItem, ValueStatus} from "mendix";
+import { ReactElement, createElement, useState, useEffect } from "react";
+import Select, { PropsValue, MultiValue, SingleValue } from 'react-select';
+import { ObjectItem, ListExpressionValue, ListAttributeValue, GUID } from "mendix";
 
-import {BizzomateReactSelectContainerProps} from "../typings/BizzomateReactSelectProps";
+import { BizzomateReactSelectContainerProps } from "../typings/BizzomateReactSelectProps";
 
 import "./ui/BizzomateReactSelect.css";
 
@@ -26,21 +26,11 @@ const getSelectedSingle = (options: readonly MxOption[], item: ObjectItem) => {
 }
 
 const getSelectedMulti = (options: readonly MxOption[], itemList: ObjectItem[]) => {
-    const optionIds = new Set(itemList.map(({id}) => id));
+    const optionIds = new Set(itemList.map(({ id }) => id));
     return options.filter(option => optionIds.has(option.value));
 }
 
-const notEmptyAndLoaded = (objectsDatasource: ListValue, assocCaption: ListExpressionValue<string>): boolean => {
-    return !!(objectsDatasource?.items && !objectsDatasource.items.some(i => assocCaption.get(i).status !== ValueStatus.Available))
-}
-
-export function BizzomateReactSelect({
-                                         linkedAssociation,
-                                         objectsDatasource,
-                                         assocCaption,
-                                         disabledAttr,
-                                         unstyled
-                                     }: BizzomateReactSelectContainerProps): ReactElement {
+export function BizzomateReactSelect(props: BizzomateReactSelectContainerProps): ReactElement {
 
     const
         [options, setOptions] = useState<readonly MxOption[]>(),
@@ -51,34 +41,34 @@ export function BizzomateReactSelect({
 
     //Check if the item is editable
     useEffect(() => {
-        setDisabled(!!linkedAssociation?.readOnly);
-        setClearable(!linkedAssociation?.readOnly);
-    }, [linkedAssociation?.readOnly])
+        setDisabled(props.linkedAssociation?.readOnly ? true : false);
+        setClearable(props.linkedAssociation?.readOnly ? false : true);
+    }, [props.linkedAssociation?.readOnly])
 
-    // Populate the options list when dataSource items change
+    //Populate the options list when dataSource items change
     useEffect(() => {
-        if (notEmptyAndLoaded(objectsDatasource, assocCaption)) {
-            setItems(objectsDatasource?.items);
-            // @ts-ignore TODO had geen zin om deze te fixen :)
-            setOptions(getOptionList(objectsDatasource.items, assocCaption, disabledAttr));
+        setItems(props.objectsDatasource?.items);
+        if (props.objectsDatasource?.items && props.assocCaption) {
+            setOptions(getOptionList(props.objectsDatasource.items, props.assocCaption, props.disabledAttr));
         } else {
-            setItems([]); // TODO heb deze even hier gezet om rerenders te voorkomen maar kijk maar of dat ook daadwerkelijk nodig is
             setOptions([]);
         }
-    }, [objectsDatasource?.items?.map(item => assocCaption.get(item).status)])
+    }, [props.objectsDatasource?.items]);
+
 
     //Keep the selected items in sync with assoc in Mx
     useEffect(() => {
-        if (linkedAssociation?.value && options) {
-            if (linkedAssociation?.type == "ReferenceSet") {
-                setValue(getSelectedMulti(options, linkedAssociation.value))
+        if (props.linkedAssociation?.value && options) {
+            if (props.linkedAssociation?.type == "ReferenceSet") {
+                setValue(getSelectedMulti(options, props.linkedAssociation.value))
             } else {
-                setValue(getSelectedSingle(options, linkedAssociation.value))
+                setValue(getSelectedSingle(options, props.linkedAssociation.value))
             }
         } else {
             setValue([]);
         }
-    }, [linkedAssociation?.value])
+    }, [props.linkedAssociation?.value])
+
 
     /*
     Handle changes done in the react-select widget and send the updates back to Mx
@@ -89,12 +79,12 @@ export function BizzomateReactSelect({
         setValue(newValue);
 
         //Update the assoc in Mx
-        if (!newValue || newValue.length == 0 || linkedAssociation?.type !== "ReferenceSet") {
-            linkedAssociation?.setValue(undefined);
+        if (!newValue || newValue.length == 0 || props.linkedAssociation?.type !== "ReferenceSet") {
+            props.linkedAssociation?.setValue(undefined);
         } else {
             const selected = new Set(newValue.map(({value}) => value));
-            linkedAssociation.setValue(items?.filter(item => selected.has(item.id)));
-        }
+            props.linkedAssociation.setValue(items?.filter(item => selected.has(item.id))); 
+        } 
     }
 
     const handleChange = (newValue: SingleValue<MxOption>) => {
@@ -102,17 +92,17 @@ export function BizzomateReactSelect({
         setValue(newValue);
 
         //Update the assoc in Mx
-        if (!newValue || linkedAssociation?.type !== "Reference") {
-            linkedAssociation?.setValue(undefined);
+        if (!newValue || props.linkedAssociation?.type !== "Reference" ) {
+            props.linkedAssociation?.setValue(undefined);
         } else {
-            linkedAssociation.setValue(items?.find(item => item.id == newValue.value));
-        }
+            props.linkedAssociation.setValue(items?.find(item => item.id == newValue.value));
+        } 
     }
 
     /*
     Render the actual react-select widget
     */
-    if (linkedAssociation?.type == "ReferenceSet") {
+    if (props.linkedAssociation?.type == "ReferenceSet") {
         return <Select
             options={options}
             value={value}
@@ -120,8 +110,8 @@ export function BizzomateReactSelect({
             onChange={handleSetChange}
             isMulti
             isDisabled={disabled}
-            unstyled={unstyled}
-            classNamePrefix="react-select"/>;
+            unstyled={props.unstyled}
+            classNamePrefix="react-select" />;
     }
     return <Select
         options={options}
@@ -129,6 +119,6 @@ export function BizzomateReactSelect({
         isClearable={clearable}
         onChange={handleChange}
         isDisabled={disabled}
-        unstyled={unstyled}
-        classNamePrefix="react-select"/>;
+        unstyled={props.unstyled}
+        classNamePrefix="react-select" />;
 }
