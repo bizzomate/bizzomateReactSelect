@@ -1,3 +1,6 @@
 .react-select__multi-value--is-disabled .react-select__multi-value__remove {
    display: none;
 }
+.react-select__multi-value--is-disabled .react-select__multi-value__label {
+   padding-right: 6px;
+}

@@ -3,15 +3,16 @@
  * WARNING: All changes made to this file will be overwritten
  * @author Mendix UI Content Team
  */
-import { ActionValue, ListValue, ListAttributeValue, ListExpressionValue, ReferenceValue, ReferenceSetValue } from "mendix";
+import { ActionValue, DynamicValue, ListValue, ListAttributeValue, ListExpressionValue, ReferenceValue, ReferenceSetValue } from "mendix";
 
 export interface BizzomateReactSelectContainerProps {
     name: string;
     tabIndex?: number;
     id: string;
+    placeholderText?: DynamicValue<string>;
     linkedAssociation: ReferenceValue | ReferenceSetValue;
-    assocCaption: ListExpressionValue<string>;
     objectsDatasource: ListValue;
+    assocCaption: ListExpressionValue<string>;
     onChangeAction?: ActionValue;
     unstyled: boolean;
     disabledAttr?: ListAttributeValue<boolean>;
@@ -19,9 +20,10 @@ export interface BizzomateReactSelectContainerProps {
 
 export interface BizzomateReactSelectPreviewProps {
     readOnly: boolean;
+    placeholderText: string;
     linkedAssociation: string;
-    assocCaption: string;
     objectsDatasource: {} | { type: string } | null;
+    assocCaption: string;
     onChangeAction: {} | null;
     unstyled: boolean;
     disabledAttr: string;

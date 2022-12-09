@@ -1,6 +1,6 @@
 import {ReactElement, useEffect, useState, createElement} from "react";
 import Select, {MultiValue, PropsValue, SingleValue} from 'react-select';
-import {GUID, ListAttributeValue, ListExpressionValue, ListValue, ObjectItem, ValueStatus} from "mendix";
+import {GUID, ListAttributeValue, ListExpressionValue, ObjectItem, ValueStatus, ListValue} from "mendix";
 
 import {BizzomateReactSelectContainerProps} from "../typings/BizzomateReactSelectProps";
 
@@ -9,7 +9,6 @@ import "./ui/BizzomateReactSelect.css";
 interface MxOption {
     readonly value: GUID;
     readonly label: string | undefined;
-    readonly isFixed?: boolean;
     readonly isDisabled?: boolean;
 }
 
@@ -30,11 +29,15 @@ const getSelectedMulti = (options: readonly MxOption[], itemList: ObjectItem[]) 
     return options.filter(option => optionIds.has(option.value));
 }
 
-const notEmptyAndLoaded = (objectsDatasource: ListValue, assocCaption: ListExpressionValue<string>): boolean => {
+const notEmptyAndLoaded = (objectsDatasource: ListValue, assocCaption: ListExpressionValue<string>, disabledAttr: ListAttributeValue<boolean> | undefined): boolean => {
     if (!objectsDatasource?.items) {
         return false;
     } else {
-        return !objectsDatasource.items.some(i => assocCaption.get(i).status !== ValueStatus.Available)
+        if (disabledAttr){
+            return objectsDatasource.items.some(i => assocCaption.get(i).status !== ValueStatus.Available) || objectsDatasource.items.some(i => disabledAttr.get(i).status !== ValueStatus.Available) ? false : true;
+        } else {
+            return !objectsDatasource.items.some(i => assocCaption.get(i).status !== ValueStatus.Available);
+        }
     }
 }
 
@@ -43,7 +46,8 @@ export function BizzomateReactSelect({
                                          objectsDatasource,
                                          assocCaption,
                                          disabledAttr,
-                                         unstyled
+                                         unstyled,
+                                         placeholderText
                                      }: BizzomateReactSelectContainerProps): ReactElement {
 
     const
@@ -51,7 +55,18 @@ export function BizzomateReactSelect({
         [value, setValue] = useState<PropsValue<MxOption>>(),
         [items, setItems] = useState<readonly ObjectItem[]>(),
         [disabled, setDisabled] = useState<boolean>(false),
-        [clearable, setClearable] = useState<boolean>(true);
+        [clearable, setClearable] = useState<boolean>(true),
+        [placeholder, setPlaceholder] = useState<string | undefined>();
+
+
+    //Get the placeholder
+    useEffect(() => {
+        if (placeholderText?.value){
+            setPlaceholder(placeholderText.value);
+        } else {
+            setPlaceholder(undefined);
+        }
+    }, [placeholderText?.value])
 
     //Check if the item is editable
     useEffect(() => {
@@ -61,15 +76,14 @@ export function BizzomateReactSelect({
 
     // Populate the options list when dataSource items change
     useEffect(() => {
-        if (notEmptyAndLoaded(objectsDatasource, assocCaption)) {
-            setItems(objectsDatasource?.items);
-            // @ts-ignore TODO had geen zin om deze te fixen :)
+        if (objectsDatasource.items && notEmptyAndLoaded(objectsDatasource, assocCaption, disabledAttr)) {
+            setItems(objectsDatasource.items);
             setOptions(getOptionList(objectsDatasource.items, assocCaption, disabledAttr));
         } else {
-            setItems([]); // TODO heb deze even hier gezet om rerenders te voorkomen maar kijk maar of dat ook daadwerkelijk nodig is
+            setItems([]);
             setOptions([]);
         }
-    }, [objectsDatasource?.items, assocCaption])
+    }, [objectsDatasource?.items, assocCaption, disabledAttr])
 
     //Keep the selected items in sync with assoc in Mx
     useEffect(() => {
@@ -125,6 +139,7 @@ export function BizzomateReactSelect({
             isMulti
             isDisabled={disabled}
             unstyled={unstyled}
+            placeholder={placeholder ? placeholder : ''}
             classNamePrefix="react-select"/>;
     }
     return <Select
@@ -134,5 +149,6 @@ export function BizzomateReactSelect({
         onChange={handleChange}
         isDisabled={disabled}
         unstyled={unstyled}
+        placeholder={placeholder ? placeholder : ''}
         classNamePrefix="react-select"/>;
 }
