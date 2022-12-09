@@ -1,8 +1,8 @@
-import {ReactElement, useEffect, useState, createElement} from "react";
-import Select, {MultiValue, PropsValue, SingleValue} from 'react-select';
-import {GUID, ListAttributeValue, ListExpressionValue, ObjectItem, ValueStatus, ListValue} from "mendix";
+import { ReactElement, useEffect, useState, createElement } from "react";
+import Select, { MultiValue, PropsValue, SingleValue } from 'react-select';
+import { GUID, ListAttributeValue, ListExpressionValue, ObjectItem, ValueStatus, ListValue } from "mendix";
 
-import {BizzomateReactSelectContainerProps} from "../typings/BizzomateReactSelectProps";
+import { BizzomateReactSelectContainerProps } from "../typings/BizzomateReactSelectProps";
 
 import "./ui/BizzomateReactSelect.css";
 
@@ -25,7 +25,7 @@ const getSelectedSingle = (options: readonly MxOption[], item: ObjectItem) => {
 }
 
 const getSelectedMulti = (options: readonly MxOption[], itemList: ObjectItem[]) => {
-    const optionIds = new Set(itemList.map(({id}) => id));
+    const optionIds = new Set(itemList.map(({ id }) => id));
     return options.filter(option => optionIds.has(option.value));
 }
 
@@ -33,7 +33,7 @@ const notEmptyAndLoaded = (objectsDatasource: ListValue, assocCaption: ListExpre
     if (!objectsDatasource?.items) {
         return false;
     } else {
-        if (disabledAttr){
+        if (disabledAttr) {
             return objectsDatasource.items.some(i => assocCaption.get(i).status !== ValueStatus.Available) || objectsDatasource.items.some(i => disabledAttr.get(i).status !== ValueStatus.Available) ? false : true;
         } else {
             return !objectsDatasource.items.some(i => assocCaption.get(i).status !== ValueStatus.Available);
@@ -42,13 +42,13 @@ const notEmptyAndLoaded = (objectsDatasource: ListValue, assocCaption: ListExpre
 }
 
 export function BizzomateReactSelect({
-                                         linkedAssociation,
-                                         objectsDatasource,
-                                         assocCaption,
-                                         disabledAttr,
-                                         unstyled,
-                                         placeholderText
-                                     }: BizzomateReactSelectContainerProps): ReactElement {
+    linkedAssociation,
+    objectsDatasource,
+    assocCaption,
+    disabledAttr,
+    unstyled,
+    placeholderText
+}: BizzomateReactSelectContainerProps): ReactElement {
 
     const
         [options, setOptions] = useState<readonly MxOption[]>(),
@@ -61,7 +61,7 @@ export function BizzomateReactSelect({
 
     //Get the placeholder
     useEffect(() => {
-        if (placeholderText?.value){
+        if (placeholderText?.value) {
             setPlaceholder(placeholderText.value);
         } else {
             setPlaceholder(undefined);
@@ -110,7 +110,7 @@ export function BizzomateReactSelect({
         if (!newValue || newValue.length == 0 || linkedAssociation?.type !== "ReferenceSet") {
             linkedAssociation?.setValue(undefined);
         } else {
-            const selected = new Set(newValue.map(({value}) => value));
+            const selected = new Set(newValue.map(({ value }) => value));
             linkedAssociation.setValue(items?.filter(item => selected.has(item.id)));
         }
     }
@@ -130,25 +130,20 @@ export function BizzomateReactSelect({
     /*
     Render the actual react-select widget
     */
-    if (linkedAssociation?.type == "ReferenceSet") {
-        return <Select
-            options={options}
-            value={value}
-            isClearable={clearable}
-            onChange={handleSetChange}
-            isMulti
-            isDisabled={disabled}
-            unstyled={unstyled}
-            placeholder={placeholder ? placeholder : ''}
-            classNamePrefix="react-select"/>;
-    }
+    const isMulti = linkedAssociation?.type == "ReferenceSet" ? true : undefined;
     return <Select
         options={options}
         value={value}
         isClearable={clearable}
-        onChange={handleChange}
+        // @ts-ignore
+        onChange={isMulti ? handleSetChange : handleChange}
+        isMulti={isMulti}
         isDisabled={disabled}
         unstyled={unstyled}
-        placeholder={placeholder ? placeholder : ''}
-        classNamePrefix="react-select"/>;
+        placeholder={placeholder && !disabled ? placeholder : null}
+        className={unstyled ? 'mx-compound-control' : undefined}
+        classNamePrefix="react-select"
+        classNames={unstyled ? {
+            control: () => 'form-control',
+        } : undefined} />;
 }
