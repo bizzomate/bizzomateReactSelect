@@ -83,7 +83,7 @@ export function BizzomateReactSelect({
             setItems([]);
             setOptions([]);
         }
-    }, [objectsDatasource?.items, assocCaption, disabledAttr])
+    }, [objectsDatasource?.items, linkedAssociation.status, assocCaption, disabledAttr])
 
     //Keep the selected items in sync with assoc in Mx
     useEffect(() => {
@@ -96,7 +96,7 @@ export function BizzomateReactSelect({
         } else {
             setValue([]);
         }
-    }, [linkedAssociation?.value])
+    }, [linkedAssociation?.value, options])
 
     /*
     Handle changes done in the react-select widget and send the updates back to Mx

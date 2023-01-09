@@ -1,9 +1,9 @@
 {
   "name": "bizzomatereactselect",
   "widgetName": "BizzomateReactSelect",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React Select implementation for Mendix",
-  "copyright": "© Bizzomate BV 2022. All rights reserved.",
+  "copyright": "© Bizzomate BV 2023. All rights reserved.",
   "author": "Jelle Dekker",
   "engines": {
     "node": ">=16"
