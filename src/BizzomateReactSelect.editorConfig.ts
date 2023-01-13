@@ -38,6 +38,7 @@ export function getProperties(_values: BizzomateReactSelectPreviewProps, default
         delete defaultProperties.properties.myOtherProperty;
     }
     */
+
     return defaultProperties;
 }
 
@@ -55,3 +56,38 @@ export function check(_values: BizzomateReactSelectPreviewProps): Problem[] {
     */
     return errors;
 }
+
+export const getPreview = (_values: BizzomateReactSelectPreviewProps, _isDarkMode: boolean, _version: number[]) => (
+    {
+        type: "Container",
+        borders: true,
+        borderRadius: 2,
+        children: [
+            {
+                type: "RowLayout",
+                columnSize: "grow",
+                children: [
+                    {
+                        type: "Container",
+                        borders: false,
+                        padding: 6,
+                        children: [
+                            {
+                                type: "Text",
+                                fontColor: "#6DB1FE",
+                                fontSize: 8,
+                                content: "[" + _values.linkedAssociation + "]"
+                            }
+                        ]
+                    },
+                    {
+                        type: "Text",
+                        content: "⏷",
+                        fontSize: 14,
+                        grow: 0
+                    }
+                ]
+            }
+        ]
+    }
+);
