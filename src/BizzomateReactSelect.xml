@@ -53,15 +53,19 @@
         </propertyGroup>
         <propertyGroup caption="Advanced">
             <propertyGroup caption="Appearance">
-                <property key="unstyled" type="boolean" defaultValue="false">
+                <property key="unstyled" type="boolean" defaultValue="true">
                     <caption>Unstyled</caption>
                     <description>Removes default styling</description>
                 </property>
             </propertyGroup>
-            <propertyGroup caption="Data source">
+            <propertyGroup caption="Data source [optional]">
+                <property key="searchCaption" type="textTemplate" dataSource="objectsDatasource" required="false">
+                    <caption>Search value</caption>
+                    <description>Provide additional info to search on, without displaying it</description>
+                </property>
                 <property key="disabledAttr" type="attribute" dataSource="objectsDatasource" required="false">
                     <caption>Disabled</caption>
-                    <description>Use a boolean to indicate that a value displayed in the list is non-selectable [Optional]</description>
+                    <description>Use a boolean to indicate that a value displayed in the list is non-selectable</description>
                     <attributeTypes>
                         <attributeType name="Boolean"/>
                     </attributeTypes>

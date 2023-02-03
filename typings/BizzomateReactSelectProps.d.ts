@@ -15,6 +15,7 @@ export interface BizzomateReactSelectContainerProps {
     assocCaption: ListExpressionValue<string>;
     onChangeAction?: ActionValue;
     unstyled: boolean;
+    searchCaption?: ListExpressionValue<string>;
     disabledAttr?: ListAttributeValue<boolean>;
 }
 
@@ -26,5 +27,6 @@ export interface BizzomateReactSelectPreviewProps {
     assocCaption: string;
     onChangeAction: {} | null;
     unstyled: boolean;
+    searchCaption: string;
     disabledAttr: string;
 }

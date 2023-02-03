@@ -9,13 +9,15 @@ import "./ui/BizzomateReactSelect.css";
 interface MxOption {
     readonly value: GUID;
     readonly label: string | undefined;
+    readonly searchlabel: string | undefined;
     readonly isDisabled?: boolean;
 }
 
-const getOptionList = (items: readonly ObjectItem[], textTemplate: ListExpressionValue<string>, disabled: ListAttributeValue<boolean> | undefined) => {
+const getOptionList = (items: readonly ObjectItem[], assocCaption: ListExpressionValue<string>, searchCaption: ListExpressionValue<string> | undefined, disabled: ListAttributeValue<boolean> | undefined) => {
     return items.map((item): MxOption => ({
         value: item.id,
-        label: textTemplate.get(item).value,
+        label: assocCaption.get(item).value,
+        searchlabel: searchCaption ? searchCaption.get(item).value : undefined,
         isDisabled: disabled ? disabled.get(item).value : undefined
     }));
 }
@@ -29,22 +31,23 @@ const getSelectedMulti = (options: readonly MxOption[], itemList: ObjectItem[]) 
     return options.filter(option => optionIds.has(option.value));
 }
 
-const notEmptyAndLoaded = (objectsDatasource: ListValue, assocCaption: ListExpressionValue<string>, disabledAttr: ListAttributeValue<boolean> | undefined): boolean => {
-    if (!objectsDatasource?.items) {
-        return false;
-    } else {
-        if (disabledAttr) {
-            return objectsDatasource.items.some(i => assocCaption.get(i).status !== ValueStatus.Available) || objectsDatasource.items.some(i => disabledAttr.get(i).status !== ValueStatus.Available) ? false : true;
-        } else {
-            return !objectsDatasource.items.some(i => assocCaption.get(i).status !== ValueStatus.Available);
-        }
+const notEmptyAndLoaded = (objectsDatasource: ListValue, assocCaption: ListExpressionValue<string>, searchCaption: ListExpressionValue<string> | undefined, disabledAttr: ListAttributeValue<boolean> | undefined): boolean => {
+    if (objectsDatasource?.items) {
+        const 
+            assocCaptionLoading = objectsDatasource.items.some(i => assocCaption.get(i).status !== ValueStatus.Available),
+            searchCaptionLoading = searchCaption ? objectsDatasource.items.some(i => searchCaption.get(i).status !== ValueStatus.Available) : false,
+            disabledAttrLoading = disabledAttr ? objectsDatasource.items.some(i => disabledAttr.get(i).status !== ValueStatus.Available) : false;
+        
+        return !assocCaptionLoading && !searchCaptionLoading && !disabledAttrLoading;
     }
+    return false
 }
 
 export function BizzomateReactSelect({
     linkedAssociation,
     objectsDatasource,
     assocCaption,
+    searchCaption,
     disabledAttr,
     unstyled,
     placeholderText
@@ -76,14 +79,14 @@ export function BizzomateReactSelect({
 
     // Populate the options list when dataSource items change
     useEffect(() => {
-        if (objectsDatasource.items && notEmptyAndLoaded(objectsDatasource, assocCaption, disabledAttr)) {
+        if (objectsDatasource.items && notEmptyAndLoaded(objectsDatasource, assocCaption, searchCaption, disabledAttr)) {
             setItems(objectsDatasource.items);
-            setOptions(getOptionList(objectsDatasource.items, assocCaption, disabledAttr));
+            setOptions(getOptionList(objectsDatasource.items, assocCaption, searchCaption, disabledAttr));
         } else {
             setItems([]);
             setOptions([]);
         }
-    }, [objectsDatasource?.items, linkedAssociation.status, assocCaption, disabledAttr])
+    }, [objectsDatasource?.items, linkedAssociation.status, assocCaption, searchCaption, disabledAttr])
 
     //Keep the selected items in sync with assoc in Mx
     useEffect(() => {
@@ -134,6 +137,8 @@ export function BizzomateReactSelect({
     return <Select
         options={options}
         value={value}
+        // @ts-ignore
+        getOptionValue={(option)=>searchCaption ? option.searchlabel : undefined}
         isClearable={clearable}
         // @ts-ignore
         onChange={isMulti ? handleSetChange : handleChange}
