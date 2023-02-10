@@ -138,7 +138,7 @@ export function BizzomateReactSelect({
         options={options}
         value={value}
         // @ts-ignore
-        getOptionValue={(option)=>searchCaption ? option.searchlabel : undefined}
+        getOptionValue={(option)=>searchCaption ? option.searchlabel : option.label}
         isClearable={clearable}
         // @ts-ignore
         onChange={isMulti ? handleSetChange : handleChange}
