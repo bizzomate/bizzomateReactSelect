@@ -1,24 +1,15 @@
 ## BizzomateReactSelect
-[React Select implementation for Mendix]
+React Select implementation for Mendix, allowing for easier Reference(set)-selection.
 
 ## Features
-[feature highlights]
-
-## Usage
-[step by step instructions]
+- Single UI for Reference and ReferenceSet selections
+- Customization of the labels shown to the end-user
+- Customizable search parameters
+- React pluggable widget, using 
+- For Mx 9.18+
 
 ## Demo project
-[link to sandbox]
+See react-select.com for examples.
 
 ## Issues, suggestions and feature requests
 [link to GitHub issues]
-
-## Development and contribution
-
-1. Install NPM package dependencies by using: `npm install`. If you use NPM v7.x.x, which can be checked by executing `npm -v`, execute: `npm install --legacy-peer-deps`.
-1. Run `npm start` to watch for code changes. On every change:
-    - the widget will be bundled;
-    - the bundle will be included in a `dist` folder in the root directory of the project;
-    - the bundle will be included in the `deployment` and `widgets` folder of the Mendix test project.
-
-[specify contribution]
