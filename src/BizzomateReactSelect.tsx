@@ -1,8 +1,9 @@
-import { ReactElement, useEffect, useState, createElement } from "react";
+import { ReactElement, useEffect, useState, createElement, Fragment } from "react";
 import Select, { MultiValue, PropsValue, SingleValue } from 'react-select';
 import { GUID, ListAttributeValue, ListExpressionValue, ObjectItem, ValueStatus, ListValue } from "mendix";
 
 import { BizzomateReactSelectContainerProps } from "../typings/BizzomateReactSelectProps";
+import { Alert } from "./components/Alert";
 
 import "./ui/BizzomateReactSelect.css";
 
@@ -134,7 +135,7 @@ export function BizzomateReactSelect({
     Render the actual react-select widget
     */
     const isMulti = linkedAssociation?.type == "ReferenceSet" ? true : undefined;
-    return <Select
+    return <Fragment><Select
         options={options}
         value={value}
         // @ts-ignore
@@ -150,5 +151,7 @@ export function BizzomateReactSelect({
         classNamePrefix="react-select"
         classNames={unstyled ? {
             control: () => 'form-control',
-        } : undefined} />;
+        } : undefined} />
+        <Alert>{linkedAssociation?.validation}</Alert>
+        </Fragment>;
 }
