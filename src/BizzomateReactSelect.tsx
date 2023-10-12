@@ -164,6 +164,7 @@ export function BizzomateReactSelect({
                 isMulti={isMulti}
                 isDisabled={disabled}
                 unstyled={unstyled}
+                menuPlacement="auto"
                 placeholder={placeholder && !disabled ? placeholder : null}
                 className={unstyled ? "mx-compound-control" : undefined}
                 classNamePrefix="react-select"
