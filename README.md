@@ -6,7 +6,7 @@ React Select implementation for Mendix, allowing for easier Reference(set)-selec
 - Customization of the labels shown to the end-user
 - Customizable search parameters
 - React pluggable widget, using 
-- For Mx 9.18+
+- For Mx 9.22+
 
 ## Demo project
 See react-select.com for examples.
