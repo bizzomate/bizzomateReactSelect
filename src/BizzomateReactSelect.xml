@@ -54,12 +54,20 @@
         <propertyGroup caption="Advanced">
             <propertyGroup caption="Appearance">
                 <property key="menuPlacement" type="enumeration" defaultValue="auto">
-                    <caption>Drop down/up</caption>
+                    <caption>Menu direction</caption>
                     <description/>
                     <enumerationValues>
                         <enumerationValue key="auto">Auto</enumerationValue>
-                        <enumerationValue key="bottom">Drop down</enumerationValue>
-                        <enumerationValue key="top">Drop up</enumerationValue>
+                        <enumerationValue key="bottom">Dropdown</enumerationValue>
+                        <enumerationValue key="top">Dropup</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="menuPosition" type="enumeration" defaultValue="fixed">
+                    <caption>Menu position</caption>
+                    <description/>
+                    <enumerationValues>
+                        <enumerationValue key="fixed">Fixed</enumerationValue>
+                        <enumerationValue key="absolute">Absolute</enumerationValue>
                     </enumerationValues>
                 </property>
                 <property key="unstyled" type="boolean" defaultValue="true">

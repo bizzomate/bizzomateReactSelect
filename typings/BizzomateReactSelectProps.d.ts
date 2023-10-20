@@ -7,6 +7,8 @@ import { ActionValue, DynamicValue, ListValue, ListAttributeValue, ListExpressio
 
 export type MenuPlacementEnum = "auto" | "bottom" | "top";
 
+export type MenuPositionEnum = "fixed" | "absolute";
+
 export interface BizzomateReactSelectContainerProps {
     name: string;
     tabIndex?: number;
@@ -17,6 +19,7 @@ export interface BizzomateReactSelectContainerProps {
     assocCaption: ListExpressionValue<string>;
     onChangeAction?: ActionValue;
     menuPlacement: MenuPlacementEnum;
+    menuPosition: MenuPositionEnum;
     unstyled: boolean;
     searchCaption?: ListExpressionValue<string>;
     disabledAttr?: ListAttributeValue<boolean>;
@@ -30,6 +33,7 @@ export interface BizzomateReactSelectPreviewProps {
     assocCaption: string;
     onChangeAction: {} | null;
     menuPlacement: MenuPlacementEnum;
+    menuPosition: MenuPositionEnum;
     unstyled: boolean;
     searchCaption: string;
     disabledAttr: string;
