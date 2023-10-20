@@ -68,7 +68,8 @@ export function BizzomateReactSelect({
     searchCaption,
     disabledAttr,
     unstyled,
-    placeholderText
+    placeholderText,
+    tabIndex
 }: BizzomateReactSelectContainerProps): ReactElement {
     const [options, setOptions] = useState<readonly MxOption[]>();
     const [value, setValue] = useState<PropsValue<MxOption>>();
@@ -154,6 +155,7 @@ export function BizzomateReactSelect({
     return (
         <Fragment>
             <Select
+                tabIndex={tabIndex}
                 options={options}
                 value={value}
                 // @ts-ignore
