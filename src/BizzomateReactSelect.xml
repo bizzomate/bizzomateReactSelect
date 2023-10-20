@@ -53,6 +53,15 @@
         </propertyGroup>
         <propertyGroup caption="Advanced">
             <propertyGroup caption="Appearance">
+                <property key="menuPlacement" type="enumeration" defaultValue="auto">
+                    <caption>Drop down/up</caption>
+                    <description/>
+                    <enumerationValues>
+                        <enumerationValue key="auto">Auto</enumerationValue>
+                        <enumerationValue key="bottom">Drop down</enumerationValue>
+                        <enumerationValue key="top">Drop up</enumerationValue>
+                    </enumerationValues>
+                </property>
                 <property key="unstyled" type="boolean" defaultValue="true">
                     <caption>Unstyled</caption>
                     <description>Removes default styling</description>

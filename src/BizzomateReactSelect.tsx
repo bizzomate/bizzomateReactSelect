@@ -69,7 +69,8 @@ export function BizzomateReactSelect({
     disabledAttr,
     unstyled,
     placeholderText,
-    tabIndex
+    tabIndex,
+    menuPlacement
 }: BizzomateReactSelectContainerProps): ReactElement {
     const [options, setOptions] = useState<readonly MxOption[]>();
     const [value, setValue] = useState<PropsValue<MxOption>>();
@@ -155,7 +156,7 @@ export function BizzomateReactSelect({
     return (
         <Fragment>
             <Select
-                tabIndex={tabIndex}
+                tabIndex={tabIndex ? tabIndex : undefined}
                 options={options}
                 value={value}
                 // @ts-ignore
@@ -166,7 +167,7 @@ export function BizzomateReactSelect({
                 isMulti={isMulti}
                 isDisabled={disabled}
                 unstyled={unstyled}
-                menuPlacement="auto"
+                menuPlacement={menuPlacement}
                 placeholder={placeholder && !disabled ? placeholder : null}
                 className={unstyled ? "mx-compound-control" : undefined}
                 classNamePrefix="react-select"

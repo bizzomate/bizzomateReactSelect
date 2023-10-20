@@ -5,6 +5,8 @@
  */
 import { ActionValue, DynamicValue, ListValue, ListAttributeValue, ListExpressionValue, ReferenceValue, ReferenceSetValue } from "mendix";
 
+export type MenuPlacementEnum = "auto" | "bottom" | "top";
+
 export interface BizzomateReactSelectContainerProps {
     name: string;
     tabIndex?: number;
@@ -14,6 +16,7 @@ export interface BizzomateReactSelectContainerProps {
     objectsDatasource: ListValue;
     assocCaption: ListExpressionValue<string>;
     onChangeAction?: ActionValue;
+    menuPlacement: MenuPlacementEnum;
     unstyled: boolean;
     searchCaption?: ListExpressionValue<string>;
     disabledAttr?: ListAttributeValue<boolean>;
@@ -26,6 +29,7 @@ export interface BizzomateReactSelectPreviewProps {
     objectsDatasource: {} | { type: string } | null;
     assocCaption: string;
     onChangeAction: {} | null;
+    menuPlacement: MenuPlacementEnum;
     unstyled: boolean;
     searchCaption: string;
     disabledAttr: string;
